@@ -1,0 +1,2766 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kids English Adventure — इंग्लिश सीखें और खेलें</title>
+    <meta
+      name="description"
+      content="A playful bilingual English and Hindi learning game for 7-year-old kids featuring Word Builder, Picture-Word Match, Easy Sentence Fill, and Color & Fill Studio."
+    />
+    <meta property="og:title" content="Kids English Adventure — इंग्लिश सीखें और खेलें" />
+    <meta
+      property="og:description"
+      content="A playful bilingual English and Hindi learning game for 7-year-old kids featuring Word Builder, Picture-Word Match, Easy Sentence Fill, and Color & Fill Studio."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Playful Kid-Friendly Fonts (English + Devanagari Hindi) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Fredoka:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Canvas Confetti CDN -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"
+      defer
+    ></script>
+
+    <style>
+      :root {
+        --bg-sky: #eff7ff;
+        --bg-cream: #fff9eb;
+        --bg-rose: #fdf2f8;
+        --surface: #ffffff;
+        --surface-soft: #f8fafc;
+        --ink: #1e293b;
+        --ink-muted: #475569;
+        --border: #e2e8f0;
+
+        --coral: #ff6b6b;
+        --coral-deep: #dc4545;
+        --amber: #f59e0b;
+        --amber-deep: #d97706;
+        --sky: #0ea5e9;
+        --sky-deep: #0284c7;
+        --emerald: #10b981;
+        --emerald-deep: #059669;
+        --violet: #9333ea;
+        --violet-deep: #7e22ce;
+
+        --radius-xl: 28px;
+        --radius-lg: 22px;
+        --radius-md: 18px;
+
+        --font-display: 'Fredoka', 'Baloo 2', system-ui, sans-serif;
+        --font-body: 'Baloo 2', 'Fredoka', system-ui, sans-serif;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+        font-family: var(--font-body);
+        color: var(--ink);
+        background: linear-gradient(145deg, var(--bg-sky) 0%, var(--bg-cream) 52%, var(--bg-rose) 100%);
+        background-attachment: fixed;
+        -webkit-tap-highlight-color: transparent;
+        overflow-x: hidden;
+      }
+
+      button {
+        font-family: inherit;
+        cursor: pointer;
+        border: none;
+        background: none;
+        color: inherit;
+        touch-action: manipulation;
+      }
+
+      button:focus-visible,
+      [tabindex]:focus-visible {
+        outline: 4px solid #38bdf8;
+        outline-offset: 3px;
+      }
+
+      /* Decorative floating background clouds/stars (non-interactive) */
+      .sky-decor {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+      }
+
+      .sky-shape {
+        position: absolute;
+        opacity: 0.35;
+        animation: gentleFloat 9s ease-in-out infinite;
+      }
+
+      .sky-shape.s1 {
+        top: 6%;
+        left: 4%;
+        width: 90px;
+        animation-delay: 0s;
+      }
+      .sky-shape.s2 {
+        top: 12%;
+        right: 6%;
+        width: 78px;
+        animation-delay: -3s;
+      }
+      .sky-shape.s3 {
+        bottom: 14%;
+        left: 7%;
+        width: 68px;
+        animation-delay: -5s;
+      }
+      .sky-shape.s4 {
+        bottom: 18%;
+        right: 5%;
+        width: 94px;
+        animation-delay: -2s;
+      }
+
+      @keyframes gentleFloat {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-10px) rotate(3deg);
+        }
+      }
+
+      /* App Shell */
+      .app-shell {
+        position: relative;
+        z-index: 1;
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 14px 16px 96px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      /* Top Header */
+      .top-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.92);
+        border: 3px solid #ffffff;
+        border-radius: 24px;
+        padding: 10px 16px;
+        box-shadow: 0 8px 24px rgba(30, 41, 59, 0.08);
+      }
+
+      .brand-btn {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-align: left;
+        padding: 4px 6px;
+        border-radius: 16px;
+        transition: transform 0.16s ease;
+        min-width: 0;
+      }
+
+      .brand-btn:active {
+        transform: scale(0.97);
+      }
+
+      .brand-icon {
+        width: 46px;
+        height: 46px;
+        flex-shrink: 0;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #fde047, #fb923c);
+        display: grid;
+        place-items: center;
+        box-shadow: 0 4px 0 #ea580c;
+      }
+
+      .brand-text {
+        min-width: 0;
+      }
+
+      .brand-title {
+        font-family: var(--font-display);
+        font-size: clamp(1.05rem, 2.5vw, 1.45rem);
+        font-weight: 700;
+        line-height: 1.15;
+        color: var(--ink);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .brand-subtitle {
+        font-size: clamp(0.78rem, 1.8vw, 0.95rem);
+        font-weight: 600;
+        color: var(--ink-muted);
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+
+      .sound-toggle {
+        min-width: 48px;
+        min-height: 48px;
+        padding: 0 12px;
+        border-radius: 18px;
+        background: #f1f5f9;
+        border: 2px solid #cbd5e1;
+        box-shadow: 0 4px 0 #cbd5e1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--ink);
+        transition: transform 0.14s ease, box-shadow 0.14s ease, background-color 0.14s ease;
+      }
+
+      .sound-toggle:hover {
+        background: #e2e8f0;
+      }
+
+      .sound-toggle:active {
+        transform: translateY(3px);
+        box-shadow: 0 1px 0 #cbd5e1;
+      }
+
+      .sound-toggle.muted {
+        background: #fee2e2;
+        border-color: #fca5a5;
+        box-shadow: 0 4px 0 #fca5a5;
+        color: #991b1b;
+      }
+
+      .star-badge {
+        min-height: 48px;
+        padding: 6px 16px;
+        border-radius: 20px;
+        background: linear-gradient(180deg, #fef08a 0%, #facc15 100%);
+        border: 2px solid #eab308;
+        box-shadow: 0 4px 0 #ca8a04;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--font-display);
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #713f12;
+        font-variant-numeric: tabular-nums;
+        transition: transform 0.16s ease, box-shadow 0.16s ease;
+      }
+
+      .star-badge:active {
+        transform: translateY(3px);
+        box-shadow: 0 1px 0 #ca8a04;
+      }
+
+      .star-badge.pop {
+        animation: starPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      @keyframes starPop {
+        0% {
+          transform: scale(1);
+        }
+        45% {
+          transform: scale(1.22) rotate(-5deg);
+        }
+        100% {
+          transform: scale(1) rotate(0deg);
+        }
+      }
+
+      /* 4-in-1 Navigation Tabs */
+      .tab-nav {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .tab-btn {
+        min-height: 58px;
+        padding: 10px 12px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.88);
+        border: 2px solid #e2e8f0;
+        box-shadow: 0 5px 0 #cbd5e1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        text-align: left;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+      }
+
+      .tab-btn:hover {
+        background: #ffffff;
+        transform: translateY(-1px);
+      }
+
+      .tab-btn:active {
+        transform: translateY(3px);
+        box-shadow: 0 2px 0 #cbd5e1;
+      }
+
+      .tab-emoji {
+        font-size: 1.55rem;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+
+      .tab-labels {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      .tab-en {
+        font-family: var(--font-display);
+        font-size: 0.98rem;
+        font-weight: 700;
+        line-height: 1.15;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .tab-hi {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--ink-muted);
+        line-height: 1.15;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .tab-btn.active[data-tab='word'] {
+        background: linear-gradient(180deg, #ff8585 0%, #ff6b6b 100%);
+        border-color: #ef4444;
+        box-shadow: 0 5px 0 var(--coral-deep);
+        color: #ffffff;
+      }
+      .tab-btn.active[data-tab='match'] {
+        background: linear-gradient(180deg, #38bdf8 0%, #0ea5e9 100%);
+        border-color: #0284c7;
+        box-shadow: 0 5px 0 var(--sky-deep);
+        color: #ffffff;
+      }
+      .tab-btn.active[data-tab='sentence'] {
+        background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+        border-color: #059669;
+        box-shadow: 0 5px 0 var(--emerald-deep);
+        color: #ffffff;
+      }
+      .tab-btn.active[data-tab='color'] {
+        background: linear-gradient(180deg, #c084fc 0%, #9333ea 100%);
+        border-color: #7e22ce;
+        box-shadow: 0 5px 0 var(--violet-deep);
+        color: #ffffff;
+      }
+
+      .tab-btn.active .tab-hi {
+        color: rgba(255, 255, 255, 0.92);
+      }
+
+      /* Main Play Stage */
+      .stage-card {
+        flex: 1;
+        background: var(--surface);
+        border: 3px solid #ffffff;
+        border-radius: var(--radius-xl);
+        padding: 22px 24px 28px;
+        box-shadow: 0 14px 34px rgba(30, 41, 59, 0.08);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+
+      .mode-top-row {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+      }
+
+      .mode-prompt {
+        font-family: var(--font-display);
+        font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+        font-weight: 700;
+        color: var(--ink);
+        margin: 0;
+      }
+
+      .round-counter {
+        font-family: var(--font-display);
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--ink-muted);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Shared 3D Kid Buttons */
+      .btn-3d {
+        min-height: 48px;
+        padding: 10px 22px;
+        border-radius: 20px;
+        font-family: var(--font-display);
+        font-size: 1.05rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease;
+        user-select: none;
+      }
+
+      .btn-3d:hover {
+        filter: brightness(1.04);
+      }
+
+      .btn-3d:active {
+        transform: translateY(3px);
+      }
+
+      .btn-speak {
+        background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
+        color: #ffffff;
+        box-shadow: 0 5px 0 #1d4ed8;
+      }
+      .btn-speak:active {
+        box-shadow: 0 2px 0 #1d4ed8;
+      }
+      .btn-speak.speaking {
+        animation: pulseSpeak 0.55s ease-in-out infinite alternate;
+      }
+
+      @keyframes pulseSpeak {
+        from {
+          transform: scale(1);
+        }
+        to {
+          transform: scale(1.06);
+        }
+      }
+
+      .btn-amber {
+        background: linear-gradient(180deg, #fcd34d 0%, #f59e0b 100%);
+        color: #451a03;
+        box-shadow: 0 5px 0 #d97706;
+      }
+      .btn-amber:active {
+        box-shadow: 0 2px 0 #d97706;
+      }
+
+      .btn-emerald {
+        background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+        color: #ffffff;
+        box-shadow: 0 5px 0 #059669;
+      }
+      .btn-emerald:active {
+        box-shadow: 0 2px 0 #059669;
+      }
+
+      .btn-slate {
+        background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+        color: var(--ink);
+        border: 2px solid #cbd5e1;
+        box-shadow: 0 5px 0 #94a3b8;
+      }
+      .btn-slate:active {
+        box-shadow: 0 2px 0 #94a3b8;
+      }
+
+      /* Feedback Banner inside stage */
+      .feedback-line {
+        min-height: 36px;
+        margin-top: 14px;
+        font-family: var(--font-display);
+        font-size: 1.15rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-align: center;
+      }
+
+      .feedback-line.ok {
+        color: #047857;
+      }
+
+      .feedback-line.try {
+        color: #c2410c;
+      }
+
+      /* ---------------- TAB 1: WORD BUILDER ---------------- */
+      .word-hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin: 6px 0 18px;
+      }
+
+      .big-emoji-box {
+        width: 128px;
+        height: 128px;
+        border-radius: 30px;
+        background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 100%);
+        border: 3px solid #fde68a;
+        display: grid;
+        place-items: center;
+        font-size: 4.5rem;
+        line-height: 1;
+        box-shadow: 0 8px 20px rgba(245, 158, 11, 0.14);
+        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .big-emoji-box.celebrate {
+        transform: scale(1.12) rotate(-4deg);
+      }
+
+      .bilingual-hint {
+        font-family: var(--font-display);
+        font-size: clamp(1.3rem, 3vw, 1.75rem);
+        font-weight: 700;
+        color: var(--ink);
+        text-align: center;
+      }
+
+      .slots-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin: 8px 0 22px;
+      }
+
+      .letter-slot {
+        width: 58px;
+        height: 64px;
+        border-radius: 18px;
+        border: 3px dashed #94a3b8;
+        background: #f8fafc;
+        display: grid;
+        place-items: center;
+        font-family: var(--font-display);
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--ink);
+        transition: transform 0.16s ease, background-color 0.16s ease, border-color 0.16s ease;
+      }
+
+      .letter-slot.filled {
+        border-style: solid;
+        border-color: #f59e0b;
+        background: linear-gradient(180deg, #fef9c3 0%, #fde047 100%);
+        box-shadow: 0 5px 0 #d97706;
+        color: #78350f;
+        animation: popIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .letter-slot.correct {
+        border-color: #10b981;
+        background: linear-gradient(180deg, #a7f3d0 0%, #34d399 100%);
+        box-shadow: 0 5px 0 #059669;
+        color: #064e3b;
+      }
+
+      .letter-slot.wrong {
+        border-color: #ef4444;
+        background: #fee2e2;
+        color: #991b1b;
+        animation: gentleShake 0.35s ease;
+      }
+
+      .letters-pool {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        max-width: 520px;
+      }
+
+      .letter-tile {
+        min-width: 58px;
+        height: 62px;
+        padding: 0 14px;
+        border-radius: 20px;
+        background: linear-gradient(180deg, #ffffff 0%, #e0f2fe 100%);
+        border: 2px solid #7dd3fc;
+        box-shadow: 0 6px 0 #0284c7;
+        font-family: var(--font-display);
+        font-size: 1.9rem;
+        font-weight: 700;
+        color: #0c4a6e;
+        display: grid;
+        place-items: center;
+        transition: transform 0.14s ease, box-shadow 0.14s ease, opacity 0.16s ease;
+      }
+
+      .letter-tile:hover:not(:disabled) {
+        transform: translateY(-2px);
+      }
+
+      .letter-tile:active:not(:disabled) {
+        transform: translateY(4px);
+        box-shadow: 0 2px 0 #0284c7;
+      }
+
+      .letter-tile:disabled {
+        opacity: 0.25;
+        cursor: default;
+        box-shadow: 0 2px 0 #cbd5e1;
+        transform: translateY(4px);
+      }
+
+      /* ---------------- TAB 2: MEMORY MATCH ---------------- */
+      .memory-grid {
+        width: 100%;
+        max-width: 720px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin: 8px 0;
+      }
+
+      .mem-card {
+        aspect-ratio: 1 / 1.05;
+        min-height: 112px;
+        perspective: 1000px;
+        position: relative;
+        padding: 0;
+      }
+
+      .mem-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transform-style: preserve-3d;
+        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .mem-card.flipped .mem-card-inner,
+      .mem-card.matched .mem-card-inner {
+        transform: rotateY(180deg);
+      }
+
+      .mem-face {
+        position: absolute;
+        inset: 0;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        border-radius: 22px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        user-select: none;
+      }
+
+      .mem-back {
+        background: linear-gradient(145deg, #38bdf8 0%, #6366f1 100%);
+        border: 3px solid #ffffff;
+        box-shadow: 0 6px 0 #4338ca;
+        color: #ffffff;
+        font-size: 2.2rem;
+      }
+
+      .mem-back::after {
+        content: '?';
+        font-family: var(--font-display);
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+      }
+
+      .mem-front {
+        transform: rotateY(180deg);
+        background: #ffffff;
+        border: 3px solid #bae6fd;
+        box-shadow: 0 6px 0 #7dd3fc;
+      }
+
+      .mem-card.matched .mem-front {
+        background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%);
+        border-color: #10b981;
+        box-shadow: 0 6px 0 #059669;
+      }
+
+      .mem-card.mismatch .mem-front {
+        border-color: #f87171;
+        background: #fef2f2;
+        animation: gentleShake 0.35s ease;
+      }
+
+      .mem-emoji {
+        font-size: clamp(2.4rem, 5vw, 3.3rem);
+        line-height: 1;
+      }
+
+      .mem-word {
+        font-family: var(--font-display);
+        font-size: clamp(1.1rem, 2.5vw, 1.45rem);
+        font-weight: 700;
+        color: var(--ink);
+        text-align: center;
+        word-break: break-word;
+      }
+
+      .mem-type-hint {
+        margin-top: 6px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--ink-muted);
+      }
+
+      /* ---------------- TAB 3: EASY SENTENCE FILL ---------------- */
+      .sentence-scene {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        margin: 4px 0 18px;
+      }
+
+      .scene-emoji-pill {
+        min-width: 140px;
+        height: 104px;
+        padding: 0 24px;
+        border-radius: 28px;
+        background: linear-gradient(145deg, #ecfdf5 0%, #d1fae5 100%);
+        border: 3px solid #6ee7b7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3.6rem;
+        gap: 6px;
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.14);
+      }
+
+      .sentence-hindi {
+        font-family: var(--font-display);
+        font-size: clamp(1.15rem, 2.6vw, 1.45rem);
+        font-weight: 700;
+        color: #065f46;
+        text-align: center;
+      }
+
+      .sentence-box {
+        background: #f8fafc;
+        border: 3px solid #e2e8f0;
+        border-radius: 24px;
+        padding: 18px 24px;
+        margin-bottom: 22px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-family: var(--font-display);
+        font-size: clamp(1.35rem, 3.4vw, 2rem);
+        font-weight: 700;
+        color: var(--ink);
+        text-align: center;
+      }
+
+      .blank-slot {
+        min-width: 132px;
+        min-height: 52px;
+        padding: 4px 18px;
+        border-radius: 18px;
+        border: 3px dashed #10b981;
+        background: #ffffff;
+        color: #059669;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease, background-color 0.2s ease;
+      }
+
+      .blank-slot.filled {
+        border-style: solid;
+        background: linear-gradient(180deg, #a7f3d0 0%, #34d399 100%);
+        color: #064e3b;
+        box-shadow: 0 4px 0 #059669;
+        animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .choices-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 14px;
+        width: 100%;
+        max-width: 680px;
+      }
+
+      .choice-bubble {
+        min-height: 64px;
+        min-width: 158px;
+        padding: 12px 24px;
+        border-radius: 24px;
+        background: linear-gradient(180deg, #ffffff 0%, #fef3c7 100%);
+        border: 3px solid #fbbf24;
+        box-shadow: 0 6px 0 #d97706;
+        font-family: var(--font-display);
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: #78350f;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: transform 0.14s ease, box-shadow 0.14s ease;
+      }
+
+      .choice-bubble:nth-child(2) {
+        background: linear-gradient(180deg, #ffffff 0%, #e0f2fe 100%);
+        border-color: #38bdf8;
+        box-shadow: 0 6px 0 #0284c7;
+        color: #0c4a6e;
+      }
+
+      .choice-bubble:nth-child(3) {
+        background: linear-gradient(180deg, #ffffff 0%, #fce7f3 100%);
+        border-color: #f472b6;
+        box-shadow: 0 6px 0 #db2777;
+        color: #831843;
+      }
+
+      .choice-bubble:active:not(:disabled) {
+        transform: translateY(4px);
+        box-shadow: 0 2px 0 currentColor;
+      }
+
+      .choice-bubble.wrong-shake {
+        animation: gentleShake 0.38s ease;
+        opacity: 0.7;
+      }
+
+      .choice-bubble.correct-glow {
+        background: linear-gradient(180deg, #6ee7b7 0%, #10b981 100%);
+        border-color: #059669;
+        box-shadow: 0 6px 0 #047857;
+        color: #ffffff;
+      }
+
+      /* ---------------- TAB 4: COLOR & FILL STUDIO ---------------- */
+      .color-studio {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .color-header-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .color-word-title {
+        font-family: var(--font-display);
+        font-size: clamp(1.35rem, 3vw, 1.85rem);
+        font-weight: 700;
+        color: var(--ink);
+      }
+
+      .svg-canvas-wrap {
+        width: 100%;
+        max-width: 380px;
+        aspect-ratio: 1 / 1;
+        background: radial-gradient(circle at center, #ffffff 0%, #f8fafc 100%);
+        border: 3px solid #e2e8f0;
+        border-radius: 28px;
+        padding: 16px;
+        display: grid;
+        place-items: center;
+        box-shadow: inset 0 4px 12px rgba(15, 23, 42, 0.04);
+      }
+
+      .svg-canvas-wrap svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+
+      .paint-zone {
+        cursor: pointer;
+        transition: filter 0.15s ease, transform 0.15s ease;
+      }
+
+      .paint-zone:hover {
+        filter: brightness(0.95);
+      }
+
+      .palette-bar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        max-width: 680px;
+      }
+
+      .crayon-btn {
+        min-width: 62px;
+        min-height: 62px;
+        padding: 6px 8px;
+        border-radius: 20px;
+        background: #f8fafc;
+        border: 3px solid #e2e8f0;
+        box-shadow: 0 4px 0 #cbd5e1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+      }
+
+      .crayon-btn.active {
+        transform: translateY(-4px) scale(1.06);
+        border-color: var(--ink);
+        background: #ffffff;
+        box-shadow: 0 7px 0 #64748b;
+      }
+
+      .crayon-swatch {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 2px solid rgba(0, 0, 0, 0.16);
+      }
+
+      .crayon-name {
+        font-family: var(--font-display);
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1;
+      }
+
+      .studio-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      /* Bottom Floating Bar */
+      .bottom-bar {
+        position: fixed;
+        left: 50%;
+        bottom: 12px;
+        transform: translateX(-50%);
+        z-index: 20;
+        background: rgba(255, 255, 255, 0.94);
+        border: 3px solid #ffffff;
+        border-radius: 26px;
+        padding: 8px 14px;
+        box-shadow: 0 10px 30px rgba(30, 41, 59, 0.16);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        max-width: calc(100vw - 24px);
+      }
+
+      /* Welcome / Title Screen Overlay */
+      .welcome-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        background: linear-gradient(155deg, #e0f2fe 0%, #fef9c3 55%, #fce7f3 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        transition: opacity 0.28s ease, transform 0.28s ease;
+      }
+
+      .welcome-overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+        transform: scale(1.03);
+      }
+
+      .welcome-card {
+        width: 100%;
+        max-width: 720px;
+        background: rgba(255, 255, 255, 0.96);
+        border: 4px solid #ffffff;
+        border-radius: 34px;
+        padding: 32px 28px;
+        box-shadow: 0 22px 60px rgba(30, 41, 59, 0.14);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .welcome-title {
+        font-family: var(--font-display);
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 700;
+        line-height: 1.08;
+        margin: 0;
+        color: var(--ink);
+        text-wrap: balance;
+      }
+
+      .welcome-sub {
+        font-family: var(--font-display);
+        font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+        font-weight: 700;
+        color: #0284c7;
+        margin: 0;
+      }
+
+      .welcome-modes {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        width: 100%;
+        margin: 6px 0;
+      }
+
+      .welcome-mode-card {
+        padding: 12px 14px;
+        border-radius: 20px;
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+        box-shadow: 0 4px 0 #cbd5e1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-align: left;
+        min-height: 58px;
+        transition: transform 0.14s ease, background-color 0.14s ease;
+      }
+
+      .welcome-mode-card:hover {
+        transform: translateY(-2px);
+        background: #ffffff;
+      }
+
+      .welcome-mode-card:active {
+        transform: translateY(2px);
+      }
+
+      .start-cta {
+        min-height: 62px;
+        padding: 14px 36px;
+        border-radius: 24px;
+        background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+        color: #ffffff;
+        box-shadow: 0 7px 0 #059669;
+        font-family: var(--font-display);
+        font-size: 1.4rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .start-cta:hover {
+        transform: translateY(-2px);
+      }
+
+      .start-cta:active {
+        transform: translateY(4px);
+        box-shadow: 0 3px 0 #059669;
+      }
+
+      .control-hint {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--ink-muted);
+      }
+
+      /* Fallback Sparkle Particles */
+      .sparkle-burst {
+        position: fixed;
+        pointer-events: none;
+        z-index: 60;
+        font-size: 1.6rem;
+        animation: sparkleFly 0.85s ease-out forwards;
+      }
+
+      @keyframes sparkleFly {
+        0% {
+          opacity: 1;
+          transform: translate(0, 0) scale(0.6);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(var(--dx), var(--dy)) scale(1.25) rotate(120deg);
+        }
+      }
+
+      @keyframes popIn {
+        0% {
+          transform: scale(0.75);
+        }
+        70% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes gentleShake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-6px);
+        }
+        50% {
+          transform: translateX(6px);
+        }
+        75% {
+          transform: translateX(-4px);
+        }
+      }
+
+      /* Responsive Mobile & Tablet Scaling */
+      @media (max-width: 760px) {
+        .tab-nav {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .memory-grid {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 10px;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .app-shell {
+          padding: 10px 10px 88px;
+          gap: 10px;
+        }
+
+        .top-header {
+          padding: 8px 10px;
+          border-radius: 20px;
+        }
+
+        .brand-icon {
+          width: 40px;
+          height: 40px;
+        }
+
+        .sound-label {
+          display: none;
+        }
+
+        .star-badge {
+          padding: 6px 12px;
+          font-size: 1.05rem;
+        }
+
+        .stage-card {
+          padding: 16px 14px 22px;
+          border-radius: 24px;
+        }
+
+        .memory-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px;
+        }
+
+        .mem-card {
+          aspect-ratio: 1.25 / 1;
+          min-height: 90px;
+        }
+
+        .welcome-modes {
+          grid-template-columns: 1fr;
+        }
+
+        .letter-slot,
+        .letter-tile {
+          min-width: 48px;
+          width: 48px;
+          height: 54px;
+          font-size: 1.55rem;
+        }
+
+        .bottom-bar {
+          padding: 6px 10px;
+          gap: 8px;
+        }
+
+        .bottom-bar .btn-3d {
+          padding: 8px 16px;
+          font-size: 0.96rem;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Soft Pastel Sky Background Decor -->
+    <div class="sky-decor" aria-hidden="true">
+      <svg class="sky-shape s1" viewBox="0 0 120 70" fill="none">
+        <path
+          d="M25 58h68a18 18 0 0 0 3-35.7A26 26 0 0 0 46 14a22 22 0 0 0-21 17A15 15 0 0 0 25 58Z"
+          fill="#FFFFFF"
+        />
+      </svg>
+      <svg class="sky-shape s2" viewBox="0 0 80 80" fill="none">
+        <path
+          d="M40 4l9.5 22.5L74 29l-18.5 16L61 69 40 56 19 69l5.5-24L6 29l24.5-2.5L40 4Z"
+          fill="#FDE047"
+        />
+      </svg>
+      <svg class="sky-shape s3" viewBox="0 0 80 80" fill="none">
+        <circle cx="40" cy="40" r="30" fill="#BAE6FD" />
+      </svg>
+      <svg class="sky-shape s4" viewBox="0 0 120 70" fill="none">
+        <path
+          d="M25 58h68a18 18 0 0 0 3-35.7A26 26 0 0 0 46 14a22 22 0 0 0-21 17A15 15 0 0 0 25 58Z"
+          fill="#FFFFFF"
+        />
+      </svg>
+    </div>
+
+    <!-- Welcome / Title Screen -->
+    <div id="welcomeOverlay" class="welcome-overlay" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+      <div class="welcome-card">
+        <svg width="96" height="96" viewBox="0 0 96 96" fill="none" aria-hidden="true">
+          <circle cx="48" cy="48" r="44" fill="#FEF08A" stroke="#F59E0B" stroke-width="4" />
+          <path
+            d="M48 18l8.6 17.4 19.2 2.8-13.9 13.5 3.3 19.1L48 61.8l-17.2 9 3.3-19.1L20.2 38.2l19.2-2.8L48 18Z"
+            fill="#FB923C"
+            stroke="#EA580C"
+            stroke-width="3"
+            stroke-linejoin="round"
+          />
+          <circle cx="40" cy="44" r="3.5" fill="#1E293B" />
+          <circle cx="56" cy="44" r="3.5" fill="#1E293B" />
+          <path d="M41 53c2.5 3 11.5 3 14 0" stroke="#1E293B" stroke-width="3.2" stroke-linecap="round" />
+        </svg>
+
+        <h1 id="welcomeTitle" class="welcome-title">Kids English Adventure</h1>
+        <p class="welcome-sub">इंग्लिश सीखें और खेलें — Play, Listen &amp; Learn!</p>
+
+        <div class="welcome-modes">
+          <button class="welcome-mode-card" data-jump="word" type="button">
+            <span style="font-size: 1.8rem">🔤</span>
+            <div>
+              <div style="font-family: var(--font-display); font-weight: 700">Word Builder</div>
+              <div style="font-size: 0.85rem; color: var(--ink-muted); font-weight: 600">शब्द बनाओ</div>
+            </div>
+          </button>
+          <button class="welcome-mode-card" data-jump="match" type="button">
+            <span style="font-size: 1.8rem">🃏</span>
+            <div>
+              <div style="font-family: var(--font-display); font-weight: 700">Picture Match</div>
+              <div style="font-size: 0.85rem; color: var(--ink-muted); font-weight: 600">जोड़ी मिलाओ</div>
+            </div>
+          </button>
+          <button class="welcome-mode-card" data-jump="sentence" type="button">
+            <span style="font-size: 1.8rem">💬</span>
+            <div>
+              <div style="font-family: var(--font-display); font-weight: 700">Sentence Fill</div>
+              <div style="font-size: 0.85rem; color: var(--ink-muted); font-weight: 600">वाक्य पूरा करो</div>
+            </div>
+          </button>
+          <button class="welcome-mode-card" data-jump="color" type="button">
+            <span style="font-size: 1.8rem">🎨</span>
+            <div>
+              <div style="font-family: var(--font-display); font-weight: 700">Color Studio</div>
+              <div style="font-size: 0.85rem; color: var(--ink-muted); font-weight: 600">रंग भरो और सीखो</div>
+            </div>
+          </button>
+        </div>
+
+        <button id="startAdventureBtn" class="start-cta" type="button">
+          <span>Let's Play! · खेलें</span>
+          <span aria-hidden="true">🚀</span>
+        </button>
+
+        <div class="control-hint">Tap any game or press Enter to start with English voice &amp; fun sounds!</div>
+      </div>
+    </div>
+
+    <!-- Main Application Shell -->
+    <div class="app-shell">
+      <!-- Top Header -->
+      <header class="top-header">
+        <button id="homeLogoBtn" class="brand-btn" type="button" title="Open Welcome Screen">
+          <div class="brand-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <path
+                d="M14 2.5l3.2 6.8 7.4 1-5.4 5.2 1.3 7.4L14 19.4l-6.5 3.5 1.3-7.4L3.4 10.3l7.4-1L14 2.5Z"
+                fill="#FFFFFF"
+                stroke="#B45309"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+          <div class="brand-text">
+            <div class="brand-title">Kids English Adventure</div>
+            <div class="brand-subtitle">इंग्लिश सीखें और खेलें</div>
+          </div>
+        </button>
+
+        <div class="header-actions">
+          <button id="soundToggleBtn" class="sound-toggle" type="button" aria-pressed="false" title="Toggle Sound">
+            <span id="soundIcon" aria-hidden="true">🔊</span>
+            <span id="soundLabel" class="sound-label">Sound On</span>
+          </button>
+
+          <button id="starBadgeBtn" class="star-badge" type="button" title="Your Stars">
+            <span aria-hidden="true">⭐</span>
+            <span id="starCount">0</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- 4-in-1 Navigation Bar -->
+      <nav class="tab-nav" aria-label="Learning Games">
+        <button class="tab-btn active" data-tab="word" type="button">
+          <span class="tab-emoji" aria-hidden="true">🔤</span>
+          <span class="tab-labels">
+            <span class="tab-en">Word Builder</span>
+            <span class="tab-hi">शब्द बनाओ</span>
+          </span>
+        </button>
+
+        <button class="tab-btn" data-tab="match" type="button">
+          <span class="tab-emoji" aria-hidden="true">🃏</span>
+          <span class="tab-labels">
+            <span class="tab-en">Picture Match</span>
+            <span class="tab-hi">जोड़ी मिलाओ</span>
+          </span>
+        </button>
+
+        <button class="tab-btn" data-tab="sentence" type="button">
+          <span class="tab-emoji" aria-hidden="true">💬</span>
+          <span class="tab-labels">
+            <span class="tab-en">Sentence Fill</span>
+            <span class="tab-hi">वाक्य पूरा करो</span>
+          </span>
+        </button>
+
+        <button class="tab-btn" data-tab="color" type="button">
+          <span class="tab-emoji" aria-hidden="true">🎨</span>
+          <span class="tab-labels">
+            <span class="tab-en">Color Studio</span>
+            <span class="tab-hi">रंग भरो और सीखो</span>
+          </span>
+        </button>
+      </nav>
+
+      <!-- Active Game Stage -->
+      <main id="stageCard" class="stage-card" aria-live="polite"></main>
+    </div>
+
+    <!-- Bottom Floating Action Bar -->
+    <div class="bottom-bar" role="toolbar" aria-label="Game Controls">
+      <button id="globalResetBtn" class="btn-3d btn-slate" type="button">
+        <span aria-hidden="true">🔄</span>
+        <span>Reset · फिर से</span>
+      </button>
+      <button id="globalNextBtn" class="btn-3d btn-amber" type="button">
+        <span>Next · अगला</span>
+        <span aria-hidden="true">➡️</span>
+      </button>
+    </div>
+
+    <script>
+      (() => {
+        'use strict';
+
+        /* =========================================================
+         * 1. SOUND FX (Web Audio API Synth) & SPEECH ENGINE
+         * =======================================================*/
+        let audioCtx = null;
+        let isMuted = false;
+
+        function ensureAudio() {
+          if (isMuted) return null;
+          if (!audioCtx) {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (Ctx) audioCtx = new Ctx();
+          }
+          if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume().catch(() => {});
+          }
+          return audioCtx;
+        }
+
+        const SoundFX = {
+          click() {
+            const ctx = ensureAudio();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(520, now);
+            osc.frequency.exponentialRampToValueAtTime(760, now + 0.065);
+            gain.gain.setValueAtTime(0.16, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.085);
+          },
+
+          flip() {
+            const ctx = ensureAudio();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(340, now);
+            osc.frequency.exponentialRampToValueAtTime(520, now + 0.06);
+            gain.gain.setValueAtTime(0.11, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.075);
+          },
+
+          waterDrop() {
+            const ctx = ensureAudio();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(360, now);
+            osc.frequency.exponentialRampToValueAtTime(920, now + 0.11);
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.15);
+          },
+
+          success() {
+            const ctx = ensureAudio();
+            if (!ctx) return;
+            const notes = [523.25, 659.25, 783.99, 1046.5];
+            const now = ctx.currentTime;
+            notes.forEach((freq, idx) => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              const t = now + idx * 0.085;
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(freq, t);
+              gain.gain.setValueAtTime(0.001, t);
+              gain.gain.linearRampToValueAtTime(0.18, t + 0.015);
+              gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start(t);
+              osc.stop(t + 0.3);
+            });
+          },
+
+          error() {
+            const ctx = ensureAudio();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(220, now);
+            osc.frequency.linearRampToValueAtTime(160, now + 0.18);
+            gain.gain.setValueAtTime(0.08, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.21);
+          },
+        };
+
+        let cachedVoices = [];
+        if ('speechSynthesis' in window) {
+          cachedVoices = window.speechSynthesis.getVoices();
+          window.speechSynthesis.onvoiceschanged = () => {
+            cachedVoices = window.speechSynthesis.getVoices();
+          };
+        }
+
+        function speak(text, { rate = 0.85, pitch = 1.08, btnEl = null } = {}) {
+          if (isMuted) return;
+
+          // Native Android TextToSpeech Bridge (when running inside Android APK)
+          if (window.AndroidTTS && typeof window.AndroidTTS.speak === 'function') {
+            try {
+              if (btnEl) {
+                btnEl.classList.add('speaking');
+                setTimeout(() => btnEl.classList.remove('speaking'), 900);
+              }
+              window.AndroidTTS.speak(String(text), Number(rate));
+              return;
+            } catch (_) {
+              // Fallback to Web Speech API
+            }
+          }
+
+          if (!('speechSynthesis' in window)) return;
+          try {
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'en-US';
+            utter.rate = rate;
+            utter.pitch = pitch;
+
+            const enVoice =
+              cachedVoices.find((v) => v.lang === 'en-US' && /google|samantha|natural|zira|jenny/i.test(v.name)) ||
+              cachedVoices.find((v) => v.lang.startsWith('en-US')) ||
+              cachedVoices.find((v) => v.lang.startsWith('en'));
+            if (enVoice) utter.voice = enVoice;
+
+            if (btnEl) {
+              btnEl.classList.add('speaking');
+              utter.onend = () => btnEl.classList.remove('speaking');
+              utter.onerror = () => btnEl.classList.remove('speaking');
+            }
+            window.speechSynthesis.speak(utter);
+          } catch (_) {
+            // Speech synthesis safely ignored if blocked
+          }
+        }
+
+        function celebrateConfetti() {
+          if (typeof window.confetti === 'function') {
+            window.confetti({
+              particleCount: 75,
+              spread: 75,
+              origin: { y: 0.62 },
+              colors: ['#FF6B6B', '#FACC15', '#34D399', '#38BDF8', '#C084FC'],
+            });
+          } else {
+            // Built-in lightweight fallback sparkle burst
+            const icons = ['⭐', '🌟', '🎉', '✨', '🎈'];
+            for (let i = 0; i < 14; i++) {
+              const el = document.createElement('div');
+              el.className = 'sparkle-burst';
+              el.textContent = icons[i % icons.length];
+              el.style.left = `${45 + (Math.random() * 14 - 7)}vw`;
+              el.style.top = `${52 + (Math.random() * 10 - 5)}vh`;
+              el.style.setProperty('--dx', `${Math.round(Math.random() * 240 - 120)}px`);
+              el.style.setProperty('--dy', `${Math.round(-80 - Math.random() * 160)}px`);
+              document.body.appendChild(el);
+              setTimeout(() => el.remove(), 900);
+            }
+          }
+        }
+
+        /* =========================================================
+         * 2. GLOBAL STATE & DATA BANKS
+         * =======================================================*/
+        const STORAGE_KEY = 'kids_english_adventure_stars_v1';
+        let stars = Number(localStorage.getItem(STORAGE_KEY) || 0) || 0;
+        let currentTab = 'word';
+        let activeTimer = null;
+
+        function clearActiveTimer() {
+          if (activeTimer) {
+            clearTimeout(activeTimer);
+            activeTimer = null;
+          }
+        }
+
+        const starCountEl = document.getElementById('starCount');
+        const starBadgeBtn = document.getElementById('starBadgeBtn');
+        const stageCard = document.getElementById('stageCard');
+        const soundToggleBtn = document.getElementById('soundToggleBtn');
+        const soundIcon = document.getElementById('soundIcon');
+        const soundLabel = document.getElementById('soundLabel');
+        const welcomeOverlay = document.getElementById('welcomeOverlay');
+
+        function renderStars(animate = false) {
+          starCountEl.textContent = String(stars);
+          if (animate) {
+            starBadgeBtn.classList.remove('pop');
+            void starBadgeBtn.offsetWidth;
+            starBadgeBtn.classList.add('pop');
+          }
+        }
+
+        function awardStars(amount = 1) {
+          stars += amount;
+          try {
+            localStorage.setItem(STORAGE_KEY, String(stars));
+          } catch (_) {}
+          renderStars(true);
+        }
+
+        function shuffleArray(arr) {
+          const copy = [...arr];
+          for (let i = copy.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [copy[i], copy[j]] = [copy[j], copy[i]];
+          }
+          return copy;
+        }
+
+        /* --- DATA: Tab 1 Word Builder --- */
+        const WORD_BANK = [
+          { word: 'LION', emoji: '🦁', hindi: 'शेर' },
+          { word: 'APPLE', emoji: '🍎', hindi: 'सेब' },
+          { word: 'TIGER', emoji: '🐯', hindi: 'बाघ' },
+          { word: 'MANGO', emoji: '🥭', hindi: 'आम' },
+          { word: 'TRAIN', emoji: '🚆', hindi: 'रेलगाड़ी' },
+          { word: 'CAT', emoji: '🐱', hindi: 'बिल्ली' },
+          { word: 'DOG', emoji: '🐶', hindi: 'कुत्ता' },
+          { word: 'FISH', emoji: '🐟', hindi: 'मछली' },
+          { word: 'SUN', emoji: '☀️', hindi: 'सूरज' },
+          { word: 'BALL', emoji: '⚽', hindi: 'गेंद' },
+          { word: 'TREE', emoji: '🌳', hindi: 'पेड़' },
+          { word: 'DUCK', emoji: '🦆', hindi: 'बत्तख' },
+          { word: 'CAKE', emoji: '🎂', hindi: 'केक' },
+          { word: 'BOOK', emoji: '📖', hindi: 'किताब' },
+          { word: 'STAR', emoji: '⭐', hindi: 'तारा' },
+          { word: 'BIRD', emoji: '🐦', hindi: 'चिड़िया' },
+        ];
+
+        /* --- DATA: Tab 2 Picture-Word Match --- */
+        const MATCH_BANK = [
+          { id: 'cat', word: 'Cat', emoji: '🐱' },
+          { id: 'dog', word: 'Dog', emoji: '🐶' },
+          { id: 'lion', word: 'Lion', emoji: '🦁' },
+          { id: 'apple', word: 'Apple', emoji: '🍎' },
+          { id: 'banana', word: 'Banana', emoji: '🍌' },
+          { id: 'car', word: 'Car', emoji: '🚗' },
+          { id: 'sun', word: 'Sun', emoji: '☀️' },
+          { id: 'fish', word: 'Fish', emoji: '🐟' },
+          { id: 'tree', word: 'Tree', emoji: '🌳' },
+          { id: 'ball', word: 'Ball', emoji: '⚽' },
+          { id: 'book', word: 'Book', emoji: '📚' },
+          { id: 'cake', word: 'Cake', emoji: '🎂' },
+          { id: 'frog', word: 'Frog', emoji: '🐸' },
+          { id: 'rocket', word: 'Rocket', emoji: '🚀' },
+          { id: 'duck', word: 'Duck', emoji: '🦆' },
+          { id: 'moon', word: 'Moon', emoji: '🌙' },
+        ];
+
+        /* --- DATA: Tab 3 Easy Sentence Fill --- */
+        const SENTENCE_BANK = [
+          {
+            scene: '🐱💤',
+            hindi: 'बिल्ली सो रही है',
+            before: 'The cat is',
+            after: '.',
+            answer: 'sleeping',
+            options: [
+              { text: 'sleeping', emoji: '😴' },
+              { text: 'flying', emoji: '🪽' },
+            ],
+          },
+          {
+            scene: '🌤️🔵',
+            hindi: 'आसमान नीला है',
+            before: 'The sky is',
+            after: '.',
+            answer: 'blue',
+            options: [
+              { text: 'blue', emoji: '🔵' },
+              { text: 'red', emoji: '🔴' },
+              { text: 'green', emoji: '🟢' },
+            ],
+          },
+          {
+            scene: '😋🍎',
+            hindi: 'मैं एक सेब खाता हूँ',
+            before: 'I eat an',
+            after: '.',
+            answer: 'apple',
+            options: [
+              { text: 'apple', emoji: '🍎' },
+              { text: 'car', emoji: '🚗' },
+              { text: 'shoe', emoji: '👟' },
+            ],
+          },
+          {
+            scene: '🐟💧',
+            hindi: 'मछली तैर सकती है',
+            before: 'A fish can',
+            after: '.',
+            answer: 'swim',
+            options: [
+              { text: 'swim', emoji: '🏊' },
+              { text: 'read', emoji: '📖' },
+            ],
+          },
+          {
+            scene: '☀️🔥',
+            hindi: 'सूरज गरम है',
+            before: 'The sun is',
+            after: '.',
+            answer: 'hot',
+            options: [
+              { text: 'hot', emoji: '☀️' },
+              { text: 'cold', emoji: '🧊' },
+            ],
+          },
+          {
+            scene: '🥛😊',
+            hindi: 'मैं दूध पीता हूँ',
+            before: 'I drink',
+            after: '.',
+            answer: 'milk',
+            options: [
+              { text: 'milk', emoji: '🥛' },
+              { text: 'rock', emoji: '🪨' },
+              { text: 'hat', emoji: '🧢' },
+            ],
+          },
+          {
+            scene: '🐶🗣️',
+            hindi: 'कुत्ता भौंकता है',
+            before: 'A dog says',
+            after: '.',
+            answer: 'woof',
+            options: [
+              { text: 'woof', emoji: '🐶' },
+              { text: 'meow', emoji: '🐱' },
+            ],
+          },
+          {
+            scene: '🌿💚',
+            hindi: 'घास हरी है',
+            before: 'The grass is',
+            after: '.',
+            answer: 'green',
+            options: [
+              { text: 'green', emoji: '🌿' },
+              { text: 'purple', emoji: '🟣' },
+              { text: 'yellow', emoji: '🟡' },
+            ],
+          },
+          {
+            scene: '📖👀',
+            hindi: 'हम किताब पढ़ते हैं',
+            before: 'We read a',
+            after: '.',
+            answer: 'book',
+            options: [
+              { text: 'book', emoji: '📖' },
+              { text: 'spoon', emoji: '🥄' },
+            ],
+          },
+          {
+            scene: '🐸⬆️',
+            hindi: 'मेंढक कूद सकता है',
+            before: 'A frog can',
+            after: '.',
+            answer: 'jump',
+            options: [
+              { text: 'jump', emoji: '🐸' },
+              { text: 'drive', emoji: '🚗' },
+              { text: 'sing', emoji: '🎤' },
+            ],
+          },
+          {
+            scene: '🍌💛',
+            hindi: 'केला पीला है',
+            before: 'A banana is',
+            after: '.',
+            answer: 'yellow',
+            options: [
+              { text: 'yellow', emoji: '💛' },
+              { text: 'blue', emoji: '💙' },
+            ],
+          },
+          {
+            scene: '🌙✨',
+            hindi: 'चाँद रात में दिखता है',
+            before: 'I see the',
+            after: '.',
+            answer: 'moon',
+            options: [
+              { text: 'moon', emoji: '🌙' },
+              { text: 'bus', emoji: '🚌' },
+            ],
+          },
+        ];
+
+        /* --- DATA: Tab 4 Color & Fill Studio --- */
+        const CRAYONS = [
+          { name: 'Red', hex: '#EF4444' },
+          { name: 'Green', hex: '#22C55E' },
+          { name: 'Blue', hex: '#3B82F6' },
+          { name: 'Yellow', hex: '#FACC15' },
+          { name: 'Orange', hex: '#FB923C' },
+          { name: 'Purple', hex: '#A855F7' },
+          { name: 'Brown', hex: '#92400E' },
+          { name: 'Pink', hex: '#EC4899' },
+        ];
+
+        const COLOR_PICTURES = [
+          {
+            id: 'apple',
+            name: 'APPLE',
+            hindi: 'सेब',
+            prompt: 'Color the Apple Red! (सेब को लाल रंग दो)',
+            zones: ['body', 'leaf', 'stem'],
+            renderSvg: (fills) => `
+              <svg viewBox="0 0 260 260" aria-label="Apple Coloring Picture">
+                <!-- Stem -->
+                <path class="paint-zone" data-zone="stem"
+                  d="M124 72 C122 46, 134 32, 146 28 L152 38 C142 42, 136 54, 136 74 Z"
+                  fill="${fills.stem || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <!-- Leaf -->
+                <path class="paint-zone" data-zone="leaf"
+                  d="M138 62 C152 34, 194 34, 204 62 C180 78, 152 76, 138 62 Z"
+                  fill="${fills.leaf || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <!-- Apple Body -->
+                <path class="paint-zone" data-zone="body"
+                  d="M130 82 C106 66, 56 76, 52 132 C48 186, 86 226, 114 224 C124 223, 128 218, 130 218 C132 218, 136 223, 146 224 C174 226, 212 186, 208 132 C204 76, 154 66, 130 82 Z"
+                  fill="${fills.body || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <!-- Cute shine -->
+                <path d="M80 116 C78 132, 82 146, 88 154" fill="none" stroke="#1E293B" stroke-width="4" stroke-linecap="round" opacity="0.25" pointer-events="none"/>
+              </svg>
+            `,
+          },
+          {
+            id: 'fish',
+            name: 'FISH',
+            hindi: 'मछली',
+            prompt: 'Color the Fish Bright! (मछली को सुंदर रंग दो)',
+            zones: ['tail', 'topfin', 'body', 'bellyfin'],
+            renderSvg: (fills) => `
+              <svg viewBox="0 0 260 260" aria-label="Fish Coloring Picture">
+                <!-- Top Fin -->
+                <path class="paint-zone" data-zone="topfin"
+                  d="M96 90 C106 54, 148 52, 162 88 Z"
+                  fill="${fills.topfin || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <!-- Tail Fin -->
+                <path class="paint-zone" data-zone="tail"
+                  d="M188 130 L236 86 C244 114, 244 146, 236 174 Z"
+                  fill="${fills.tail || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <!-- Body -->
+                <path class="paint-zone" data-zone="body"
+                  d="M32 130 C52 80, 144 74, 192 130 C144 186, 52 180, 32 130 Z"
+                  fill="${fills.body || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <!-- Side Fin -->
+                <path class="paint-zone" data-zone="bellyfin"
+                  d="M110 144 C128 142, 142 162, 126 178 C110 174, 102 158, 110 144 Z"
+                  fill="${fills.bellyfin || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <!-- Eye & Smile -->
+                <circle cx="72" cy="120" r="9" fill="#1E293B" pointer-events="none" />
+                <circle cx="70" cy="117" r="3" fill="#FFFFFF" pointer-events="none" />
+                <path d="M44 138 Q56 146 66 138" fill="none" stroke="#1E293B" stroke-width="4" stroke-linecap="round" pointer-events="none" />
+              </svg>
+            `,
+          },
+          {
+            id: 'sun',
+            name: 'SUN',
+            hindi: 'सूरज',
+            prompt: 'Color the Sun Yellow & Orange! (सूरज को पीला और नारंगी रंग दो)',
+            zones: ['center', 'ray1', 'ray2', 'ray3', 'ray4'],
+            renderSvg: (fills) => `
+              <svg viewBox="0 0 260 260" aria-label="Sun Coloring Picture">
+                <!-- Top & Bottom Rays -->
+                <path class="paint-zone" data-zone="ray1" d="M130 16 L146 56 L114 56 Z"
+                  fill="${fills.ray1 || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <path class="paint-zone" data-zone="ray2" d="M130 244 L146 204 L114 204 Z"
+                  fill="${fills.ray2 || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <!-- Left & Right Rays -->
+                <path class="paint-zone" data-zone="ray3" d="M16 130 L56 114 L56 146 Z"
+                  fill="${fills.ray3 || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <path class="paint-zone" data-zone="ray4" d="M244 130 L204 114 L204 146 Z"
+                  fill="${fills.ray4 || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <!-- Diagonal accent rays -->
+                <path class="paint-zone" data-zone="ray1" d="M52 52 L84 68 L68 84 Z"
+                  fill="${fills.ray1 || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <path class="paint-zone" data-zone="ray2" d="M208 208 L176 192 L192 176 Z"
+                  fill="${fills.ray2 || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <path class="paint-zone" data-zone="ray3" d="M52 208 L68 176 L84 192 Z"
+                  fill="${fills.ray3 || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <path class="paint-zone" data-zone="ray4" d="M208 52 L192 84 L176 68 Z"
+                  fill="${fills.ray4 || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <!-- Sun Face -->
+                <circle class="paint-zone" data-zone="center" cx="130" cy="130" r="64"
+                  fill="${fills.center || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" />
+                <circle cx="110" cy="120" r="6" fill="#1E293B" pointer-events="none" />
+                <circle cx="150" cy="120" r="6" fill="#1E293B" pointer-events="none" />
+                <path d="M110 144 Q130 162 150 144" fill="none" stroke="#1E293B" stroke-width="4.5" stroke-linecap="round" pointer-events="none" />
+              </svg>
+            `,
+          },
+          {
+            id: 'tree',
+            name: 'TREE',
+            hindi: 'पेड़',
+            prompt: 'Color the Tree Green & Brown! (पेड़ को हरा और भूरा रंग दो)',
+            zones: ['trunk', 'leftcanopy', 'rightcanopy', 'topcanopy'],
+            renderSvg: (fills) => `
+              <svg viewBox="0 0 260 260" aria-label="Tree Coloring Picture">
+                <!-- Trunk -->
+                <path class="paint-zone" data-zone="trunk"
+                  d="M110 146 L150 146 L156 232 L104 232 Z"
+                  fill="${fills.trunk || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <!-- Left Canopy -->
+                <circle class="paint-zone" data-zone="leftcanopy" cx="84" cy="126" r="44"
+                  fill="${fills.leftcanopy || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" />
+                <!-- Right Canopy -->
+                <circle class="paint-zone" data-zone="rightcanopy" cx="176" cy="126" r="44"
+                  fill="${fills.rightcanopy || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" />
+                <!-- Top Canopy -->
+                <circle class="paint-zone" data-zone="topcanopy" cx="130" cy="84" r="52"
+                  fill="${fills.topcanopy || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" />
+              </svg>
+            `,
+          },
+          {
+            id: 'car',
+            name: 'CAR',
+            hindi: 'गाड़ी',
+            prompt: 'Color the Car Blue! (गाड़ी को नीला रंग दो)',
+            zones: ['roof', 'window', 'body', 'wheel1', 'wheel2'],
+            renderSvg: (fills) => `
+              <svg viewBox="0 0 260 260" aria-label="Car Coloring Picture">
+                <!-- Roof / Cabin -->
+                <path class="paint-zone" data-zone="roof"
+                  d="M74 126 L98 76 L170 76 L194 126 Z"
+                  fill="${fills.roof || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <!-- Window -->
+                <path class="paint-zone" data-zone="window"
+                  d="M92 120 L108 88 L160 88 L174 120 Z"
+                  fill="${fills.window || '#FFFFFF'}" stroke="#1E293B" stroke-width="4" stroke-linejoin="round" />
+                <!-- Car Body -->
+                <rect class="paint-zone" data-zone="body" x="30" y="124" width="200" height="58" rx="22"
+                  fill="${fills.body || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" />
+                <!-- Wheels -->
+                <circle class="paint-zone" data-zone="wheel1" cx="80" cy="186" r="28"
+                  fill="${fills.wheel1 || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" />
+                <circle cx="80" cy="186" r="10" fill="#E2E8F0" stroke="#1E293B" stroke-width="3" pointer-events="none" />
+                <circle class="paint-zone" data-zone="wheel2" cx="182" cy="186" r="28"
+                  fill="${fills.wheel2 || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" />
+                <circle cx="182" cy="186" r="10" fill="#E2E8F0" stroke="#1E293B" stroke-width="3" pointer-events="none" />
+              </svg>
+            `,
+          },
+          {
+            id: 'house',
+            name: 'HOUSE',
+            hindi: 'घर',
+            prompt: 'Color the House! (घर में प्यारे रंग भरो)',
+            zones: ['roof', 'wall', 'door', 'window'],
+            renderSvg: (fills) => `
+              <svg viewBox="0 0 260 260" aria-label="House Coloring Picture">
+                <!-- Roof -->
+                <path class="paint-zone" data-zone="roof"
+                  d="M32 122 L130 40 L228 122 Z"
+                  fill="${fills.roof || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+                <!-- Wall -->
+                <rect class="paint-zone" data-zone="wall" x="54" y="122" width="152" height="104" rx="10"
+                  fill="${fills.wall || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" />
+                <!-- Door -->
+                <rect class="paint-zone" data-zone="door" x="108" y="156" width="44" height="70" rx="8"
+                  fill="${fills.door || '#FFFFFF'}" stroke="#1E293B" stroke-width="5" />
+                <circle cx="142" cy="192" r="4" fill="#1E293B" pointer-events="none" />
+                <!-- Window -->
+                <rect class="paint-zone" data-zone="window" x="68" y="144" width="30" height="30" rx="6"
+                  fill="${fills.window || '#FFFFFF'}" stroke="#1E293B" stroke-width="4" />
+              </svg>
+            `,
+          },
+        ];
+
+        /* =========================================================
+         * 3. MODULE CONTROLLERS
+         * =======================================================*/
+
+        /* ---------- TAB 1 STATE: WORD BUILDER ---------- */
+        const wordState = {
+          deck: shuffleArray(WORD_BANK),
+          index: 0,
+          slots: [],
+          pool: [],
+          locked: false,
+          status: '', // '', 'ok', 'try'
+          feedback: '',
+        };
+
+        function setupWordRound(keepIndex = false) {
+          clearActiveTimer();
+          if (!keepIndex && wordState.index >= wordState.deck.length) {
+            wordState.deck = shuffleArray(WORD_BANK);
+            wordState.index = 0;
+          }
+          const item = wordState.deck[wordState.index];
+          const letters = item.word.split('');
+          let scrambled = shuffleArray(letters);
+          // Avoid identical pre-solved order for >2 letters when possible
+          if (letters.length > 2 && scrambled.join('') === item.word) {
+            scrambled = [...letters.slice(1), letters[0]];
+          }
+          wordState.slots = Array(letters.length).fill(null);
+          wordState.pool = scrambled.map((ch, idx) => ({ id: idx, char: ch, used: false }));
+          wordState.locked = false;
+          wordState.status = '';
+          wordState.feedback = '';
+          renderWordBuilder();
+        }
+
+        function handlePickPoolLetter(poolIdx) {
+          if (wordState.locked) return;
+          const tile = wordState.pool[poolIdx];
+          if (!tile || tile.used) return;
+          const nextEmpty = wordState.slots.findIndex((s) => s === null);
+          if (nextEmpty === -1) return;
+
+          SoundFX.click();
+          speak(tile.char.toLowerCase(), { rate: 0.9, pitch: 1.15 });
+
+          tile.used = true;
+          wordState.slots[nextEmpty] = { poolId: poolIdx, char: tile.char };
+          wordState.status = '';
+          wordState.feedback = '';
+
+          // Check if all slots filled
+          if (wordState.slots.every((s) => s !== null)) {
+            const item = wordState.deck[wordState.index];
+            const attempt = wordState.slots.map((s) => s.char).join('');
+            if (attempt === item.word) {
+              wordState.locked = true;
+              wordState.status = 'ok';
+              wordState.feedback = `🌟 Great job! ${item.word}! (बहुत बढ़िया!)`;
+              renderWordBuilder();
+              SoundFX.success();
+              awardStars(1);
+              celebrateConfetti();
+              setTimeout(() => speak(`Great job! ${item.word}`, { rate: 0.85 }), 240);
+              activeTimer = setTimeout(() => {
+                wordState.index = (wordState.index + 1) % wordState.deck.length;
+                if (wordState.index === 0) wordState.deck = shuffleArray(WORD_BANK);
+                setupWordRound(true);
+              }, 2000);
+              return;
+            } else {
+              wordState.status = 'try';
+              wordState.feedback = 'Almost! Tap any yellow letter to change it (फिर से कोशिश करो)';
+              SoundFX.error();
+            }
+          }
+          renderWordBuilder();
+        }
+
+        function handleRemoveSlotLetter(slotIdx) {
+          if (wordState.locked) return;
+          const placed = wordState.slots[slotIdx];
+          if (!placed) return;
+          SoundFX.flip();
+          wordState.pool[placed.poolId].used = false;
+          wordState.slots[slotIdx] = null;
+          wordState.status = '';
+          wordState.feedback = '';
+          renderWordBuilder();
+        }
+
+        function renderWordBuilder() {
+          const item = wordState.deck[wordState.index];
+          stageCard.innerHTML = `
+            <div class="mode-top-row">
+              <h2 class="mode-prompt">Build the English Word! · शब्द बनाओ</h2>
+              <span class="round-counter">${wordState.index + 1} / ${wordState.deck.length}</span>
+            </div>
+
+            <div class="word-hero">
+              <div class="big-emoji-box ${wordState.status === 'ok' ? 'celebrate' : ''}" aria-hidden="true">
+                ${item.emoji}
+              </div>
+              <div class="bilingual-hint">${item.hindi} (${item.word})</div>
+              <button id="wbSpeakBtn" class="btn-3d btn-speak" type="button">
+                <span aria-hidden="true">🔊</span>
+                <span>Hear Word · सुनो</span>
+              </button>
+            </div>
+
+            <div class="slots-row" role="group" aria-label="Word letter slots">
+              ${wordState.slots
+                .map((slot, idx) => {
+                  const stateClass =
+                    wordState.status === 'ok'
+                      ? 'filled correct'
+                      : wordState.status === 'try' && slot
+                      ? 'filled wrong'
+                      : slot
+                      ? 'filled'
+                      : '';
+                  return `
+                    <button
+                      class="letter-slot ${stateClass}"
+                      data-slot-idx="${idx}"
+                      type="button"
+                      aria-label="${slot ? `Remove letter ${slot.char}` : `Empty letter slot ${idx + 1}`}"
+                    >
+                      ${slot ? slot.char : ''}
+                    </button>
+                  `;
+                })
+                .join('')}
+            </div>
+
+            <div class="letters-pool" role="group" aria-label="Available letters">
+              ${wordState.pool
+                .map(
+                  (tile, idx) => `
+                  <button
+                    class="letter-tile"
+                    data-pool-idx="${idx}"
+                    type="button"
+                    ${tile.used ? 'disabled' : ''}
+                    aria-label="Letter ${tile.char}"
+                  >
+                    ${tile.char}
+                  </button>
+                `
+                )
+                .join('')}
+            </div>
+
+            <div class="feedback-line ${wordState.status}">
+              ${wordState.feedback}
+            </div>
+          `;
+
+          const speakBtn = document.getElementById('wbSpeakBtn');
+          speakBtn.addEventListener('click', () => {
+            SoundFX.click();
+            speak(item.word, { rate: 0.85, btnEl: speakBtn });
+          });
+
+          stageCard.querySelectorAll('[data-pool-idx]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              handlePickPoolLetter(Number(btn.dataset.poolIdx));
+            });
+          });
+
+          stageCard.querySelectorAll('[data-slot-idx]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              handleRemoveSlotLetter(Number(btn.dataset.slotIdx));
+            });
+          });
+        }
+
+        /* ---------- TAB 2 STATE: PICTURE-WORD MATCH ---------- */
+        const matchState = {
+          cards: [],
+          flippedIndices: [],
+          matchedIds: new Set(),
+          mismatchIndices: [],
+          lockBoard: false,
+          round: 1,
+          feedback: 'Tap 2 cards to match Picture & Word! (तस्वीर और शब्द की जोड़ी मिलाओ)',
+          status: '',
+        };
+
+        function setupMatchRound(incrementRound = false) {
+          clearActiveTimer();
+          if (incrementRound) matchState.round += 1;
+          const chosen = shuffleArray(MATCH_BANK).slice(0, 4);
+          const deck = [];
+          chosen.forEach((pair) => {
+            deck.push({ pairId: pair.id, type: 'emoji', display: pair.emoji, speakText: pair.word });
+            deck.push({ pairId: pair.id, type: 'word', display: pair.word, speakText: pair.word });
+          });
+          matchState.cards = shuffleArray(deck);
+          matchState.flippedIndices = [];
+          matchState.matchedIds = new Set();
+          matchState.mismatchIndices = [];
+          matchState.lockBoard = false;
+          matchState.status = '';
+          matchState.feedback = 'Tap 2 cards to match Picture & Word! (तस्वीर और शब्द की जोड़ी मिलाओ)';
+          renderMatchGame();
+        }
+
+        function handleFlipCard(idx) {
+          if (matchState.lockBoard) return;
+          const card = matchState.cards[idx];
+          if (!card || matchState.matchedIds.has(card.pairId)) return;
+          if (matchState.flippedIndices.includes(idx)) return;
+
+          SoundFX.flip();
+          speak(card.speakText, { rate: 0.85 });
+          matchState.flippedIndices.push(idx);
+          renderMatchGame();
+
+          if (matchState.flippedIndices.length === 2) {
+            const [firstIdx, secondIdx] = matchState.flippedIndices;
+            const first = matchState.cards[firstIdx];
+            const second = matchState.cards[secondIdx];
+
+            if (first.pairId === second.pairId) {
+              matchState.matchedIds.add(first.pairId);
+              matchState.flippedIndices = [];
+              SoundFX.success();
+
+              if (matchState.matchedIds.size === 4) {
+                matchState.status = 'ok';
+                matchState.feedback = '🎉 Amazing! All 4 pairs matched! +2 ⭐';
+                awardStars(2);
+                celebrateConfetti();
+                renderMatchGame();
+                activeTimer = setTimeout(() => setupMatchRound(true), 1900);
+              } else {
+                matchState.status = 'ok';
+                matchState.feedback = `Nice match! ${first.speakText}! (शाबाश!)`;
+                renderMatchGame();
+              }
+            } else {
+              matchState.lockBoard = true;
+              matchState.mismatchIndices = [firstIdx, secondIdx];
+              matchState.status = 'try';
+              matchState.feedback = 'Not a match — try again! (फिर से देखो)';
+              renderMatchGame();
+              setTimeout(() => SoundFX.error(), 160);
+
+              activeTimer = setTimeout(() => {
+                matchState.flippedIndices = [];
+                matchState.mismatchIndices = [];
+                matchState.lockBoard = false;
+                matchState.status = '';
+                matchState.feedback = 'Find the matching pair!';
+                renderMatchGame();
+              }, 800);
+            }
+          }
+        }
+
+        function renderMatchGame() {
+          stageCard.innerHTML = `
+            <div class="mode-top-row">
+              <h2 class="mode-prompt">Match Picture &amp; Word · जोड़ी मिलाओ</h2>
+              <span class="round-counter">Round ${matchState.round} · ${matchState.matchedIds.size}/4</span>
+            </div>
+
+            <div class="memory-grid" role="grid" aria-label="Memory Match Cards">
+              ${matchState.cards
+                .map((card, idx) => {
+                  const isMatched = matchState.matchedIds.has(card.pairId);
+                  const isFlipped = isMatched || matchState.flippedIndices.includes(idx);
+                  const isMismatch = matchState.mismatchIndices.includes(idx);
+                  return `
+                    <button
+                      class="mem-card ${isFlipped ? 'flipped' : ''} ${isMatched ? 'matched' : ''} ${isMismatch ? 'mismatch' : ''}"
+                      data-card-idx="${idx}"
+                      type="button"
+                      aria-label="${isFlipped ? card.speakText : `Hidden card ${idx + 1}`}"
+                      ${isMatched ? 'aria-disabled="true"' : ''}
+                    >
+                      <div class="mem-card-inner">
+                        <div class="mem-face mem-back"></div>
+                        <div class="mem-face mem-front">
+                          ${
+                            card.type === 'emoji'
+                              ? `<span class="mem-emoji" aria-hidden="true">${card.display}</span>`
+                              : `<span class="mem-word">${card.display}</span>`
+                          }
+                          <span class="mem-type-hint">${isMatched ? '✅ Matched' : card.type === 'emoji' ? 'Picture' : 'Word'}</span>
+                        </div>
+                      </div>
+                    </button>
+                  `;
+                })
+                .join('')}
+            </div>
+
+            <div class="feedback-line ${matchState.status}">
+              ${matchState.feedback}
+            </div>
+          `;
+
+          stageCard.querySelectorAll('[data-card-idx]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              handleFlipCard(Number(btn.dataset.cardIdx));
+            });
+          });
+        }
+
+        /* ---------- TAB 3 STATE: EASY SENTENCE FILL ---------- */
+        const sentenceState = {
+          deck: shuffleArray(SENTENCE_BANK),
+          index: 0,
+          shuffledOptions: [],
+          answered: false,
+          wrongOption: null,
+          status: '',
+          feedback: '',
+        };
+
+        function setupSentenceRound(keepIndex = false) {
+          clearActiveTimer();
+          if (!keepIndex && sentenceState.index >= sentenceState.deck.length) {
+            sentenceState.deck = shuffleArray(SENTENCE_BANK);
+            sentenceState.index = 0;
+          }
+          const q = sentenceState.deck[sentenceState.index];
+          sentenceState.shuffledOptions = shuffleArray(q.options);
+          sentenceState.answered = false;
+          sentenceState.wrongOption = null;
+          sentenceState.status = '';
+          sentenceState.feedback = '';
+          renderSentenceFill();
+        }
+
+        function handlePickSentenceOption(optText) {
+          if (sentenceState.answered) return;
+          const q = sentenceState.deck[sentenceState.index];
+          speak(optText, { rate: 0.85 });
+
+          if (optText === q.answer) {
+            sentenceState.answered = true;
+            sentenceState.wrongOption = null;
+            sentenceState.status = 'ok';
+            sentenceState.feedback = `🌟 "${q.before} ${q.answer}${q.after}" — Awesome!`;
+            renderSentenceFill();
+            SoundFX.success();
+            awardStars(1);
+            celebrateConfetti();
+
+            setTimeout(() => {
+              speak(`${q.before} ${q.answer}`, { rate: 0.82 });
+            }, 380);
+
+            activeTimer = setTimeout(() => {
+              sentenceState.index = (sentenceState.index + 1) % sentenceState.deck.length;
+              if (sentenceState.index === 0) sentenceState.deck = shuffleArray(SENTENCE_BANK);
+              setupSentenceRound(true);
+            }, 2500);
+          } else {
+            sentenceState.wrongOption = optText;
+            sentenceState.status = 'try';
+            sentenceState.feedback = 'Oops! Try another bubble! (फिर से कोशिश करो)';
+            SoundFX.error();
+            renderSentenceFill();
+          }
+        }
+
+        function renderSentenceFill() {
+          const q = sentenceState.deck[sentenceState.index];
+          stageCard.innerHTML = `
+            <div class="mode-top-row">
+              <h2 class="mode-prompt">Complete the Sentence! · वाक्य पूरा करो</h2>
+              <span class="round-counter">${sentenceState.index + 1} / ${sentenceState.deck.length}</span>
+            </div>
+
+            <div class="sentence-scene">
+              <div class="scene-emoji-pill" aria-hidden="true">${q.scene}</div>
+              <div class="sentence-hindi">${q.hindi}</div>
+            </div>
+
+            <div class="sentence-box">
+              <span>${q.before}</span>
+              <span class="blank-slot ${sentenceState.answered ? 'filled' : ''}">
+                ${sentenceState.answered ? q.answer : '?'}
+              </span>
+              ${q.after ? `<span>${q.after}</span>` : ''}
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <button id="sfSpeakBtn" class="btn-3d btn-speak" type="button">
+                <span aria-hidden="true">🔊</span>
+                <span>Listen · सुनो</span>
+              </button>
+            </div>
+
+            <div class="choices-row" role="group" aria-label="Word choices">
+              ${sentenceState.shuffledOptions
+                .map((opt) => {
+                  const isCorrectShown = sentenceState.answered && opt.text === q.answer;
+                  const isWrong = sentenceState.wrongOption === opt.text;
+                  return `
+                    <button
+                      class="choice-bubble ${isCorrectShown ? 'correct-glow' : ''} ${isWrong ? 'wrong-shake' : ''}"
+                      data-opt="${opt.text}"
+                      type="button"
+                      ${sentenceState.answered ? 'disabled' : ''}
+                    >
+                      <span aria-hidden="true">${opt.emoji}</span>
+                      <span>${opt.text}</span>
+                    </button>
+                  `;
+                })
+                .join('')}
+            </div>
+
+            <div class="feedback-line ${sentenceState.status}">
+              ${sentenceState.feedback}
+            </div>
+          `;
+
+          const sfSpeakBtn = document.getElementById('sfSpeakBtn');
+          sfSpeakBtn.addEventListener('click', () => {
+            SoundFX.click();
+            const text = sentenceState.answered ? `${q.before} ${q.answer}` : `${q.before} ...`;
+            speak(text, { rate: 0.85, btnEl: sfSpeakBtn });
+          });
+
+          stageCard.querySelectorAll('[data-opt]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              handlePickSentenceOption(btn.dataset.opt);
+            });
+          });
+        }
+
+        /* ---------- TAB 4 STATE: COLOR & FILL STUDIO ---------- */
+        const colorState = {
+          index: 0,
+          activeColor: CRAYONS[0], // Red default
+          fills: {},
+          awardedForPicture: false,
+          feedback: 'Pick a color below, then tap the picture! (रंग चुनें और चित्र पर टैप करें)',
+          status: '',
+        };
+
+        function setupColorPicture(resetOnly = false) {
+          clearActiveTimer();
+          if (!resetOnly) {
+            colorState.awardedForPicture = false;
+          }
+          colorState.fills = {};
+          colorState.status = '';
+          colorState.feedback = 'Pick a color below, then tap the picture! (रंग चुनें और चित्र पर टैप करें)';
+          renderColorStudio();
+        }
+
+        function handlePaintZone(zoneId) {
+          colorState.fills[zoneId] = colorState.activeColor.hex;
+          SoundFX.waterDrop();
+
+          const pic = COLOR_PICTURES[colorState.index];
+          const allFilled = pic.zones.every((z) => Boolean(colorState.fills[z]));
+
+          if (allFilled && !colorState.awardedForPicture) {
+            colorState.awardedForPicture = true;
+            colorState.status = 'ok';
+            colorState.feedback = `🎨 Beautiful ${pic.name}! +1 ⭐ (बहुत सुंदर!)`;
+            awardStars(1);
+            SoundFX.success();
+            celebrateConfetti();
+            speak(`Beautiful ${pic.name}!`, { rate: 0.85 });
+          } else {
+            colorState.status = '';
+            colorState.feedback = `Colored with ${colorState.activeColor.name}!`;
+          }
+          renderColorStudio();
+        }
+
+        function renderColorStudio() {
+          const pic = COLOR_PICTURES[colorState.index];
+          stageCard.innerHTML = `
+            <div class="mode-top-row">
+              <h2 class="mode-prompt">${pic.prompt}</h2>
+              <span class="round-counter">${colorState.index + 1} / ${COLOR_PICTURES.length}</span>
+            </div>
+
+            <div class="color-studio">
+              <div class="color-header-bar">
+                <span class="color-word-title">${pic.name} - ${pic.hindi}</span>
+                <button id="csSpeakBtn" class="btn-3d btn-speak" type="button">
+                  <span aria-hidden="true">🔊</span>
+                  <span>Say "${pic.name}"</span>
+                </button>
+              </div>
+
+              <div class="svg-canvas-wrap">
+                ${pic.renderSvg(colorState.fills)}
+              </div>
+
+              <div class="palette-bar" role="radiogroup" aria-label="Color Palette">
+                ${CRAYONS.map(
+                  (c, idx) => `
+                  <button
+                    class="crayon-btn ${colorState.activeColor.name === c.name ? 'active' : ''}"
+                    data-crayon-idx="${idx}"
+                    type="button"
+                    role="radio"
+                    aria-checked="${colorState.activeColor.name === c.name}"
+                    aria-label="${c.name}"
+                  >
+                    <span class="crayon-swatch" style="background: ${c.hex};"></span>
+                    <span class="crayon-name">${c.name}</span>
+                  </button>
+                `
+                ).join('')}
+              </div>
+
+              <div class="studio-actions">
+                <button id="csClearBtn" class="btn-3d btn-slate" type="button">
+                  <span aria-hidden="true">🧽</span>
+                  <span>Clear · साफ़ करो</span>
+                </button>
+                <button id="csNextBtn" class="btn-3d btn-emerald" type="button">
+                  <span>Next Picture · अगला चित्र</span>
+                  <span aria-hidden="true">🎨</span>
+                </button>
+              </div>
+
+              <div class="feedback-line ${colorState.status}" style="margin-top: 4px;">
+                ${colorState.feedback}
+              </div>
+            </div>
+          `;
+
+          const csSpeakBtn = document.getElementById('csSpeakBtn');
+          csSpeakBtn.addEventListener('click', () => {
+            SoundFX.click();
+            speak(pic.name, { rate: 0.85, btnEl: csSpeakBtn });
+          });
+
+          stageCard.querySelectorAll('.paint-zone').forEach((el) => {
+            el.addEventListener('click', () => {
+              handlePaintZone(el.dataset.zone);
+            });
+          });
+
+          stageCard.querySelectorAll('[data-crayon-idx]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const chosen = CRAYONS[Number(btn.dataset.crayonIdx)];
+              colorState.activeColor = chosen;
+              SoundFX.click();
+              speak(chosen.name, { rate: 0.9 });
+              renderColorStudio();
+            });
+          });
+
+          document.getElementById('csClearBtn').addEventListener('click', () => {
+            SoundFX.flip();
+            setupColorPicture(true);
+          });
+
+          document.getElementById('csNextBtn').addEventListener('click', () => {
+            SoundFX.click();
+            colorState.index = (colorState.index + 1) % COLOR_PICTURES.length;
+            setupColorPicture(false);
+          });
+        }
+
+        /* =========================================================
+         * 4. TAB SWITCHING & GLOBAL CONTROLS
+         * =======================================================*/
+        function switchTab(tabName) {
+          clearActiveTimer();
+          currentTab = tabName;
+
+          document.querySelectorAll('.tab-btn').forEach((btn) => {
+            btn.classList.toggle('active', btn.dataset.tab === tabName);
+          });
+
+          if (tabName === 'word') {
+            setupWordRound(true);
+          } else if (tabName === 'match') {
+            setupMatchRound(false);
+          } else if (tabName === 'sentence') {
+            setupSentenceRound(true);
+          } else if (tabName === 'color') {
+            renderColorStudio();
+          }
+        }
+
+        function handleGlobalReset() {
+          SoundFX.flip();
+          if (currentTab === 'word') {
+            setupWordRound(true);
+          } else if (currentTab === 'match') {
+            setupMatchRound(false);
+          } else if (currentTab === 'sentence') {
+            setupSentenceRound(true);
+          } else if (currentTab === 'color') {
+            setupColorPicture(true);
+          }
+        }
+
+        function handleGlobalNext() {
+          SoundFX.click();
+          if (currentTab === 'word') {
+            wordState.index = (wordState.index + 1) % wordState.deck.length;
+            if (wordState.index === 0) wordState.deck = shuffleArray(WORD_BANK);
+            setupWordRound(true);
+          } else if (currentTab === 'match') {
+            setupMatchRound(true);
+          } else if (currentTab === 'sentence') {
+            sentenceState.index = (sentenceState.index + 1) % sentenceState.deck.length;
+            if (sentenceState.index === 0) sentenceState.deck = shuffleArray(SENTENCE_BANK);
+            setupSentenceRound(true);
+          } else if (currentTab === 'color') {
+            colorState.index = (colorState.index + 1) % COLOR_PICTURES.length;
+            setupColorPicture(false);
+          }
+        }
+
+        /* =========================================================
+         * 5. EVENT BINDINGS & INIT
+         * =======================================================*/
+        document.querySelectorAll('.tab-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            SoundFX.click();
+            switchTab(btn.dataset.tab);
+          });
+        });
+
+        document.getElementById('globalResetBtn').addEventListener('click', handleGlobalReset);
+        document.getElementById('globalNextBtn').addEventListener('click', handleGlobalNext);
+
+        soundToggleBtn.addEventListener('click', () => {
+          isMuted = !isMuted;
+          soundToggleBtn.classList.toggle('muted', isMuted);
+          soundToggleBtn.setAttribute('aria-pressed', String(isMuted));
+          soundIcon.textContent = isMuted ? '🔇' : '🔊';
+          soundLabel.textContent = isMuted ? 'Muted' : 'Sound On';
+          if (isMuted) {
+            if (window.AndroidTTS && typeof window.AndroidTTS.stop === 'function') {
+              try {
+                window.AndroidTTS.stop();
+              } catch (_) {}
+            }
+            if ('speechSynthesis' in window) {
+              window.speechSynthesis.cancel();
+            }
+          } else {
+            SoundFX.click();
+          }
+        });
+
+        starBadgeBtn.addEventListener('click', () => {
+          SoundFX.success();
+          renderStars(true);
+          speak(`You have ${stars} ${stars === 1 ? 'star' : 'stars'}!`, { rate: 0.85 });
+        });
+
+        function dismissWelcome(targetTab = null) {
+          ensureAudio();
+          SoundFX.success();
+          welcomeOverlay.classList.add('hidden');
+          if (targetTab) {
+            switchTab(targetTab);
+          }
+          setTimeout(() => {
+            speak("Let's learn English!", { rate: 0.88 });
+          }, 120);
+        }
+
+        document.getElementById('startAdventureBtn').addEventListener('click', () => dismissWelcome(null));
+
+        document.querySelectorAll('.welcome-mode-card').forEach((card) => {
+          card.addEventListener('click', () => dismissWelcome(card.dataset.jump));
+        });
+
+        document.getElementById('homeLogoBtn').addEventListener('click', () => {
+          SoundFX.click();
+          welcomeOverlay.classList.remove('hidden');
+        });
+
+        // Helpful Keyboard Shortcuts (Enter/Space on welcome, A-Z & Backspace in Word Builder, 1-3 in Sentence Fill)
+        window.addEventListener('keydown', (e) => {
+          const welcomeOpen = !welcomeOverlay.classList.contains('hidden');
+          if (welcomeOpen) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              dismissWelcome(null);
+            }
+            return;
+          }
+
+          if (currentTab === 'word' && !wordState.locked) {
+            if (/^[a-zA-Z]$/.test(e.key)) {
+              const target = e.key.toUpperCase();
+              const poolIdx = wordState.pool.findIndex((t) => !t.used && t.char === target);
+              if (poolIdx !== -1) handlePickPoolLetter(poolIdx);
+            } else if (e.key === 'Backspace') {
+              for (let i = wordState.slots.length - 1; i >= 0; i--) {
+                if (wordState.slots[i] !== null) {
+                  handleRemoveSlotLetter(i);
+                  break;
+                }
+              }
+            }
+          } else if (currentTab === 'sentence' && !sentenceState.answered) {
+            if (['1', '2', '3'].includes(e.key)) {
+              const idx = Number(e.key) - 1;
+              const opt = sentenceState.shuffledOptions[idx];
+              if (opt) handlePickSentenceOption(opt.text);
+            }
+          }
+        });
+
+        // Native Android Back Button Support
+        window.__handleAndroidBack = () => {
+          if (welcomeOverlay.classList.contains('hidden')) {
+            welcomeOverlay.classList.remove('hidden');
+            return true;
+          }
+          return false;
+        };
+
+        // Initial Boot
+        renderStars(false);
+        switchTab('word');
+      })();
+    </script>
+  </body>
+</html>
