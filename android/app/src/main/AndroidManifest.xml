@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- The game loads its web fonts and confetti helper from their CDNs. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <!-- Discover system TextToSpeech engine on Android 11+ -->
     <queries>
         <intent>
