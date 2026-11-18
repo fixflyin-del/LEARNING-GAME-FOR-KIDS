@@ -30,7 +30,9 @@ jobs:
           set -euo pipefail
           : "${ANDROID_HOME:?ANDROID_HOME is not configured on the runner}"
           command -v sdkmanager
+          set +o pipefail
           yes | sdkmanager --sdk_root="${ANDROID_HOME}" --licenses >/dev/null
+          set -o pipefail
           sdkmanager --sdk_root="${ANDROID_HOME}" --install \
             "platform-tools" \
             "platforms;android-34" \
