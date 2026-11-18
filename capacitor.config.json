@@ -1,0 +1,8 @@
+{
+  "appId": "com.fixfly.kidslearning",
+  "appName": "Kids English Adventure",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}
