@@ -1,0 +1,6 @@
+{
+  "name": "Kids English Adventure",
+  "description": "A playful bilingual English and Hindi learning game for 7-year-old kids featuring Word Builder, Picture-Word Match, Easy Sentence Fill, and Color & Fill Studio.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
