@@ -11,6 +11,7 @@ permissions:
 jobs:
   build-apk:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -21,34 +22,67 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          packages: 'platform-tools;platforms;android-34;build-tools;34.0.0'
+      # GitHub's Ubuntu runner already includes Android command-line tools.
+      # Do not use setup-android here: its default "tools" package is retired.
+      - name: Install required Android SDK packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${ANDROID_HOME:?ANDROID_HOME is not configured on the runner}"
+          command -v sdkmanager
+          yes | sdkmanager --sdk_root="${ANDROID_HOME}" --licenses >/dev/null
+          sdkmanager --sdk_root="${ANDROID_HOME}" --install \
+            "platform-tools" \
+            "platforms;android-34" \
+            "build-tools;34.0.0"
+          test -d "${ANDROID_HOME}/platforms/android-34"
+          test -d "${ANDROID_HOME}/build-tools/34.0.0"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.7'
 
-      - name: Bundle latest learning game HTML
+      - name: Validate Android project inputs
+        shell: bash
         run: |
+          set -euo pipefail
+          test -s android/settings.gradle.kts
+          test -s android/build.gradle.kts
+          test -s android/app/build.gradle.kts
+          test -s android/app/src/main/AndroidManifest.xml
+          test -s android/app/src/main/java/com/kidsenglish/adventure/MainActivity.kt
+          test -s android/app/src/main/res/values/strings.xml
+          test -s android/app/src/main/res/values/themes.xml
+          test -s android/app/proguard-rules.pro
+          test -s index.html
           mkdir -p android/app/src/main/assets
           cp index.html android/app/src/main/assets/index.html
-          test -s android/app/src/main/assets/index.html
+          cmp -s index.html android/app/src/main/assets/index.html
+          grep -q 'applicationId = "com.kidsenglish.adventure"' android/app/build.gradle.kts
+          grep -q 'compileSdk = 34' android/app/build.gradle.kts
+
+      - name: Verify Gradle configuration
+        working-directory: android
+        run: gradle help --no-daemon
 
       - name: Build debug APK
         working-directory: android
         run: gradle assembleDebug --no-daemon
 
       - name: Verify APK
+        shell: bash
         run: |
-          test -s android/app/build/outputs/apk/debug/app-debug.apk
-          ls -lh android/app/build/outputs/apk/debug/app-debug.apk
+          set -euo pipefail
+          APK="android/app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$APK"
+          file "$APK"
+          ls -lh "$APK"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Kids-English-Adventure-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
           retention-days: 90
