@@ -28,12 +28,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          : "${ANDROID_HOME:?ANDROID_HOME is not configured on the runner}"
-          command -v sdkmanager
+          : "${ANDROID_HOME:=/usr/local/lib/android/sdk}"
+          export ANDROID_HOME
+          SDKMANAGER="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$SDKMANAGER"
           set +o pipefail
-          yes | sdkmanager --sdk_root="${ANDROID_HOME}" --licenses >/dev/null
+          yes | "$SDKMANAGER" --sdk_root="${ANDROID_HOME}" --licenses >/dev/null
           set -o pipefail
-          sdkmanager --sdk_root="${ANDROID_HOME}" --install \
+          "$SDKMANAGER" --sdk_root="${ANDROID_HOME}" --install \
             "platform-tools" \
             "platforms;android-34" \
             "build-tools;34.0.0"
